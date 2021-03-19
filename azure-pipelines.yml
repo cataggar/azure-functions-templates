@@ -37,6 +37,12 @@ steps:
   inputs:
     SourceFolder: $(System.DefaultWorkingDirectory)/loc
     TargetFolder: $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: loc'
+  inputs:
+    ArtifactName: 'loc'
+    
 - task: Npm@1
   inputs:
     command: 'install'
@@ -68,8 +74,3 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
-  
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: loc'
-  inputs:
-    ArtifactName: 'loc'
