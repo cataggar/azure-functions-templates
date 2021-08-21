@@ -57,7 +57,12 @@ steps:
     gulpFile: '.\Build\gulpfile.js'
     targets: 'build-all'
     enableCodeCoverage: false
-  
+
+- task: PowerShell@2
+  inputs:
+    commitId: $(Build.SourceVersion)
+    filePath: '.\Build\scripts\uploadVersionInfoToStorage.ps1'
+
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Build.Repository.LocalPath)\bin\VS'
