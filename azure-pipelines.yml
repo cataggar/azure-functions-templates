@@ -86,7 +86,7 @@ steps:
       $rootPath = $pwd
       
       # Storage Context
-      $ctx = New-AzureStorageContext -StorageAccountName $(ACCOUNT_NAME) -SasToken $(ACCOUNT_KEY)
+      $ctx = New-AzureStorageContext -StorageAccountName "$(ACCOUNT_NAME)" -SasToken "$(ACCOUNT_KEY)"
       
       $fileName = "ExtensionBundle.v1.LastestVersion.json" 
       GenerateIndexJson $ctx $BundleV1Template $fileName $rootPath
