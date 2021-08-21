@@ -60,6 +60,8 @@ steps:
 
 - task: PowerShell@2
   inputs:
+    ACCOUNT_NAME: $(ACCOUNT_NAME)
+    ACCOUNT_KEY: $(ACCOUNT_KEY)
     commitId: $(Build.SourceVersion)
     filePath: '.\Build\scripts\uploadVersionInfoToStorage.ps1'
 
