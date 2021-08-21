@@ -76,7 +76,6 @@ steps:
           $json | Out-File -FilePath $filePath -Encoding ascii
           $blobName = "ExtensionBundleTemplates\versions\" + $fileName
           Set-AzureStorageBlobContent -Container "public" -File $filePath -Blob $blobName -Context $ctx -Force
-      
       }
       
       # get the build version
