@@ -57,13 +57,46 @@ steps:
     gulpFile: '.\Build\gulpfile.js'
     targets: 'build-all'
     enableCodeCoverage: false
-
+  
 - task: PowerShell@2
   inputs:
-    ACCOUNT_NAME: $(ACCOUNT_NAME)
-    ACCOUNT_KEY: $(ACCOUNT_KEY)
-    commitId: $(Build.SourceVersion)
-    filePath: '.\Build\scripts\uploadVersionInfoToStorage.ps1'
+    targetType: 'inline'
+    script: |
+      function GenerateIndexJson($ctx, $bundleVersion, $fileName, $rootPath)
+      {
+      $filePath = Join-Path -Path $rootPath -ChildPath $fileName
+      
+      $json = @"   
+          {
+              "version": "$BundleV1Template",
+              "commitId" : "$(Build.SourceVersion)"
+          }
+      "@
+      
+          $json | Out-File -FilePath $filePath -Encoding ascii
+          $blobName = "ExtensionBundleTemplates\versions\" + $fileName
+          Set-AzureStorageBlobContent -Container "public" -File $filePath -Blob $blobName -Context $ctx -Force
+      
+      }
+      
+      # get the build version
+      $BundleV1Template = "1.0." + $env:devops_buildNumber
+      $BundleV2Template = "2.0." + $env:devops_buildNumber
+      $BundleV3Template = "3.0." + $env:devops_buildNumber
+      
+      $rootPath = $pwd
+      
+      # Storage Context
+      $ctx = New-AzureStorageContext -StorageAccountName $(ACCOUNT_NAME) -SasToken $(ACCOUNT_KEY)
+      
+      $fileName = "ExtensionBundle.v1.LastestVersion.json" 
+      GenerateIndexJson $ctx $BundleV1Template $fileName $rootPath
+      
+      $fileName = "ExtensionBundle.v2.LastestVersion.json" 
+      GenerateIndexJson $ctx $BundleV1Template $fileName $rootPath
+      
+      $fileName = "ExtensionBundle.v3.LastestVersion.json" 
+      GenerateIndexJson $ctx $BundleV1Template $fileName $rootPath
 
 - task: CopyFiles@2
   inputs:
